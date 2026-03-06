@@ -2,7 +2,7 @@ package com.airtribe.meditrack;
 
 
 import com.airtribe.meditrack.constants.Constants;
-import com.airtribe.meditrack.menu.*;
+import com.airtribe.meditrack.menu.MainMenu;
 import com.airtribe.meditrack.service.AppointmentService;
 import com.airtribe.meditrack.service.DoctorService;
 import com.airtribe.meditrack.service.PatientService;

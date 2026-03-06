@@ -3,7 +3,6 @@ package com.airtribe.meditrack.service;
 import com.airtribe.meditrack.constants.Constants;
 import com.airtribe.meditrack.constants.Specialization;
 import com.airtribe.meditrack.entity.Doctor;
-import com.airtribe.meditrack.entity.Patient;
 import com.airtribe.meditrack.entity.id.EntityID;
 import com.airtribe.meditrack.interfaces.Searchable;
 import com.airtribe.meditrack.util.CSVUtil;
@@ -17,23 +16,22 @@ import java.util.List;
 
 public class DoctorService implements Searchable<Doctor> {
 
-    private final  DataStore<Doctor> doctorStore;
     private static DoctorService instance;
-
+    private final DataStore<Doctor> doctorStore;
     private final AppointmentService appointmentService = AppointmentService.getInstance();
+
     private DoctorService(DataStore<Doctor> store) {
         this.doctorStore = store;
     }
 
 
-    public static DoctorService getInstance( ) {
+    public static DoctorService getInstance() {
         if (instance == null) {
             DataStore<Doctor> store = new DataStore<>();
             instance = new DoctorService(store);
         }
         return instance;
     }
-
 
 
     // CREATE
@@ -52,7 +50,7 @@ public class DoctorService implements Searchable<Doctor> {
     // Search by DoctorID
     public Doctor search(EntityID id) {
         System.out.println(id.getValue());
-        System.out.println( doctorStore.getAll());
+        System.out.println(doctorStore.getAll());
         return doctorStore.get(id.getValue());
     }
 
@@ -63,8 +61,8 @@ public class DoctorService implements Searchable<Doctor> {
 
         List<Doctor> result = new ArrayList<>();
 
-        for(Doctor d : doctorStore.getAll()) {
-            if(d.getSpecialization().getValue().equalsIgnoreCase(specInput)) {
+        for (Doctor d : doctorStore.getAll()) {
+            if (d.getSpecialization().getValue().equalsIgnoreCase(specInput)) {
                 result.add(d);
             }
         }
@@ -78,15 +76,14 @@ public class DoctorService implements Searchable<Doctor> {
 
         List<Doctor> result = new ArrayList<>();
 
-        for(Doctor d : doctorStore.getAll()) {
-            if(d.getSpecialization()== (specialization)) {
+        for (Doctor d : doctorStore.getAll()) {
+            if (d.getSpecialization() == (specialization)) {
                 result.add(d);
             }
         }
 
         return result;
     }
-
 
 
     @Override
@@ -98,9 +95,6 @@ public class DoctorService implements Searchable<Doctor> {
     public void printSearchHeader() {
         Searchable.super.printSearchHeader();
     }
-
-
-
 
 
     // UPDATE
@@ -122,31 +116,30 @@ public class DoctorService implements Searchable<Doctor> {
     }
 
 
-
     public void saveDoctors(String filePath) {
 
         List<String> lines = doctorStore.getAll()
                 .stream()
-                .sorted(Comparator.comparing(d ->d.getId().toString()))
-                .map( d->d.getId() + "," +
-                    d.getName() + "," +
-                    d.getPhone() + "," +
-                    d.getEmail() + "," +
-                    d.getSpecialization() + "," +
-                    d.getConsultationFee()).toList();
+                .sorted(Comparator.comparing(d -> d.getId().toString()))
+                .map(d -> d.getId() + "," +
+                        d.getName() + "," +
+                        d.getPhone() + "," +
+                        d.getEmail() + "," +
+                        d.getSpecialization() + "," +
+                        d.getConsultationFee()).toList();
 
 
         CSVUtil.writeCSV(filePath, lines, Constants.DOCTORS_HEADER);
     }
 
-    public  void loadDoctors(String filePath) {
+    public void loadDoctors(String filePath) {
 
         List<String[]> rows = CSVUtil.readCSV(filePath);
 
         for (String[] data : rows) {
 
             Doctor d = new Doctor(
-                   null,
+                    null,
                     data[1],
                     data[2],
                     data[3],

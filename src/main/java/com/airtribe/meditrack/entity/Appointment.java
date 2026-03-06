@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Appointment implements AppointmentSubject,Cloneable {
+public class Appointment implements AppointmentSubject, Cloneable {
 
     PatientService patientService = PatientService.getInstance();
     DoctorService doctorService = DoctorService.getInstance();
@@ -26,6 +26,30 @@ public class Appointment implements AppointmentSubject,Cloneable {
     private List<AppointmentObserver> observers = new ArrayList<>();
 
 
+    public Appointment(EntityID appointmentId,
+                       Patient patient,
+                       Doctor doctor,
+                       LocalDateTime appointmentTime, AppointmentStatus status) {
+
+        this.appointmentId = appointmentId;
+        this.patient = patient;
+        this.doctor = doctor;
+        this.appointmentTime = appointmentTime;
+        this.status = status;
+    }
+
+    public Appointment(EntityID appointmentId,
+                       EntityID patientId,
+                       EntityID doctorId,
+                       LocalDateTime appointmentTime, AppointmentStatus status) {
+
+        this.appointmentId = appointmentId;
+        this.patient = patientService.search(patientId);
+        this.doctor = doctorService.search(doctorId);
+        this.appointmentTime = appointmentTime;
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "Appointment{" +
@@ -36,31 +60,6 @@ public class Appointment implements AppointmentSubject,Cloneable {
                 ", status=" + status +
                 '}';
     }
-
-    public Appointment(EntityID appointmentId,
-                       Patient patient,
-                       Doctor doctor,
-                       LocalDateTime appointmentTime, AppointmentStatus status) {
-
-        this.appointmentId = appointmentId;
-        this.patient = patient;
-        this.doctor = doctor;
-        this.appointmentTime = appointmentTime;
-        this.status=status;
-    }
-
-    public Appointment(EntityID appointmentId,
-                       EntityID patientId,
-                       EntityID doctorId,
-                       LocalDateTime appointmentTime, AppointmentStatus status) {
-
-        this.appointmentId = appointmentId;
-        this.patient = patientService.search(patientId);
-        this.doctor =  doctorService.search(doctorId);
-        this.appointmentTime = appointmentTime;
-        this.status=status;
-    }
-
 
     public EntityID getAppointmentId() {
         return appointmentId;
@@ -86,13 +85,12 @@ public class Appointment implements AppointmentSubject,Cloneable {
         this.doctor = doctor;
     }
 
-    public void setPatient(Patient patient) {
-        this.patient = patient;
-    }
-
-
     public Patient getPatient() {
         return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
     public AppointmentStatus getStatus() {

@@ -1,4 +1,5 @@
 package com.airtribe.meditrack.entity;
+
 import com.airtribe.meditrack.entity.id.EntityID;
 
 import java.time.LocalDateTime;

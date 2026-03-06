@@ -2,17 +2,15 @@ package com.airtribe.meditrack.entity.bill;
 
 
 import com.airtribe.meditrack.billing.BillingStrategy;
-import com.airtribe.meditrack.constants.Constants;
 import com.airtribe.meditrack.entity.BillSummary;
 import com.airtribe.meditrack.entity.MedicalEntity;
 import com.airtribe.meditrack.entity.id.EntityID;
 import com.airtribe.meditrack.interfaces.Payable;
 
 
+public class DoctorBill extends MedicalEntity implements Payable {
 
-public class DoctorBill  extends MedicalEntity implements Payable {
-
-   private double consultationFee;
+    private double consultationFee;
 
     private BillingStrategy billingStrategy;
 
@@ -20,7 +18,7 @@ public class DoctorBill  extends MedicalEntity implements Payable {
                       double consultationFee,
                       BillingStrategy billingStrategy) {
 
-       super(billId);
+        super(billId);
         this.consultationFee = consultationFee;
         this.billingStrategy = billingStrategy;
     }
@@ -33,7 +31,7 @@ public class DoctorBill  extends MedicalEntity implements Payable {
         double tax = total - consultationFee;
 
         return new BillSummary(
-                getId(),"Doctor Consultation",
+                getId(), "Doctor Consultation",
                 consultationFee,
                 tax,
                 total

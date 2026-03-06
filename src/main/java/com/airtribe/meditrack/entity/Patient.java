@@ -3,8 +3,7 @@ package com.airtribe.meditrack.entity;
 
 import com.airtribe.meditrack.entity.id.EntityID;
 
-public class Patient extends Person  implements Cloneable {
-
+public class Patient extends Person implements Cloneable {
 
 
     private int age;
@@ -18,16 +17,16 @@ public class Patient extends Person  implements Cloneable {
     }
 
 
-
     public int getAge() {
         return age;
     }
 
-    public String getGender() {
-        return gender;
-    }
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public String getGender() {
+        return gender;
     }
 
     public void setGender(String gender) {

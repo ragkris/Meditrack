@@ -3,32 +3,34 @@ package com.airtribe.meditrack.service;
 
 import com.airtribe.meditrack.constants.AppointmentStatus;
 import com.airtribe.meditrack.constants.Constants;
-import com.airtribe.meditrack.constants.Specialization;
 import com.airtribe.meditrack.entity.Appointment;
-import com.airtribe.meditrack.entity.Doctor;
 import com.airtribe.meditrack.entity.id.EntityID;
 import com.airtribe.meditrack.exception.AppointmentNotFoundException;
-import com.airtribe.meditrack.menu.MainMenu;
 import com.airtribe.meditrack.observer.AppointmentExpiryObserver;
 import com.airtribe.meditrack.observer.AppointmentObserver;
-import com.airtribe.meditrack.util.*;
+import com.airtribe.meditrack.util.CSVUtil;
+import com.airtribe.meditrack.util.DataStore;
+import com.airtribe.meditrack.util.DateUtil;
+import com.airtribe.meditrack.util.IdGenerator;
 
 import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class AppointmentService {
 
 
-    private final  DataStore<Appointment> appointmentStore;
     private static AppointmentService instance;
+    private final DataStore<Appointment> appointmentStore;
 
     private AppointmentService(DataStore<Appointment> store) {
         this.appointmentStore = store;
     }
 
 
-    public static AppointmentService getInstance( ) {
+    public static AppointmentService getInstance() {
         if (instance == null) {
             DataStore<Appointment> store = new DataStore<>();
             instance = new AppointmentService(store);
@@ -39,7 +41,7 @@ public class AppointmentService {
 
     //BOOK appointment
     public Appointment bookAppointment(Appointment appointment) {
-        if(appointment.getAppointmentId()==null) appointment.setAppointmentId(IdGenerator.generateAppointmentId());
+        if (appointment.getAppointmentId() == null) appointment.setAppointmentId(IdGenerator.generateAppointmentId());
         appointment.setStatus(AppointmentStatus.CONFIRMED);
         appointmentStore.add(appointment.getAppointmentId().getValue(), appointment);
         return appointment;
@@ -48,7 +50,7 @@ public class AppointmentService {
 
     //BLOCK Appointment
     public void createAppointment(Appointment appointment) {
-        if(appointment.getAppointmentId()==null) appointment.setAppointmentId(IdGenerator.generateAppointmentId());
+        if (appointment.getAppointmentId() == null) appointment.setAppointmentId(IdGenerator.generateAppointmentId());
         appointment.setStatus(AppointmentStatus.PENDING);
         AppointmentObserver expiryObserver =
                 new AppointmentExpiryObserver();
@@ -62,14 +64,30 @@ public class AppointmentService {
                 appointment
         );
     }
+
     //VIEW appointment by id
-    public Appointment getAppointment(String id) {
-        Appointment appt = appointmentStore.get(id);
-        if(appt == null) {
+    public List<Appointment>  getAppointment(String id) {
+        String entity = id.startsWith("DOC-") ? "DOCTOR" : id.startsWith("PAT-") ? "PATIENT" : "APPOINTMENT";
+        List<Appointment> list = null;
+        switch (entity) {
+            case "DOCTOR" -> {
+                list = getAllAppointmentsByDocId(id);
+
+            }
+            case "PATIENT" -> {
+                list = getAllAppointmentsByPatientId(id);
+            }
+            case "APPOINTMENT" -> {
+                list = new ArrayList<>();
+                list.add(appointmentStore.get(id));
+            }
+        }
+
+        if (list == null || list.isEmpty()) {
             throw new AppointmentNotFoundException("Appointment not found");
         }
 
-        return appt;
+        return list;
     }
 
     //VIEW all appointments
@@ -78,16 +96,16 @@ public class AppointmentService {
     }
 
     //VIEW all appointments
-    public List<Appointment> getAllAppointmentsByDocId(String id ) {
-        List<Appointment> result= new ArrayList<>();
-        for(Appointment a : appointmentStore.getAll()) {
+    public List<Appointment> getAllAppointmentsByDocId(String id) {
+        List<Appointment> result = new ArrayList<>();
+        for (Appointment a : appointmentStore.getAll()) {
             try {
 //                System.out.println(a);
                 if (a.getDoctor().getId().getValue().equalsIgnoreCase(id)) {
                     result.add(a);
                 }
-            }catch (Exception e){
-                System.out.println("Doctor  assigned to "+a.getAppointmentId()+" has been deleted");
+            } catch (Exception e) {
+                System.out.println("Doctor  assigned to " + a.getAppointmentId() + " has been deleted");
 
             }
         }
@@ -95,16 +113,16 @@ public class AppointmentService {
 
     }
 
-    public List<Appointment> getAllAppointmentsByPatientId(String id ) {
-        List<Appointment> result= new ArrayList<>();
-        for(Appointment a : appointmentStore.getAll()) {
+    public List<Appointment> getAllAppointmentsByPatientId(String id) {
+        List<Appointment> result = new ArrayList<>();
+        for (Appointment a : appointmentStore.getAll()) {
             try {
 //                System.out.println(a);
                 if (a.getPatient().getId().getValue().equalsIgnoreCase(id)) {
                     result.add(a);
                 }
-            }catch (Exception e){
-                System.out.println("Patient  assigned to "+a.getAppointmentId()+" has been deleted");
+            } catch (Exception e) {
+                System.out.println("Patient  assigned to " + a.getAppointmentId() + " has been deleted");
             }
         }
         return result;
@@ -120,10 +138,10 @@ public class AppointmentService {
 
     }
 
-    public boolean removeAppointment(String id){
+    public boolean removeAppointment(String id) {
         boolean updated = false;
-        String person = id.startsWith("DOC-")?"DOCTOR":id.startsWith("PAT-")?"PATIENT":"";
-        List<Appointment> rm =null;
+        String person = id.startsWith("DOC-") ? "DOCTOR" : id.startsWith("PAT-") ? "PATIENT" : "";
+        List<Appointment> rm = null;
         switch (person) {
             case "DOCTOR" -> {
                 rm = getAllAppointmentsByDocId(id);
@@ -133,18 +151,18 @@ public class AppointmentService {
                 rm = getAllAppointmentsByPatientId(id);
             }
         }
-            if(rm!=null)
-                for(Appointment r:rm){
-                    appointmentStore.remove(r.getAppointmentId().getValue());
-                    updated=true;
-                }
-            return updated;
+        if (rm != null)
+            for (Appointment r : rm) {
+                appointmentStore.remove(r.getAppointmentId().getValue());
+                updated = true;
+            }
+        return updated;
 
 
     }
 
 
-    public void updateAppointment(String appointmentId,    LocalDateTime newTime,       AppointmentStatus newStatus) {
+    public void updateAppointment(String appointmentId, LocalDateTime newTime, AppointmentStatus newStatus) {
 
         Appointment appointment = appointmentStore.get(appointmentId);
 
@@ -162,12 +180,14 @@ public class AppointmentService {
             appointment.setStatus(newStatus);
         }
     }
+
     public void updateAppointment(Appointment app) {
 
         appointmentStore.add(app.getAppointmentId().getValue(), app);
 
     }
-    public   void loadAppointments(String filePath) throws ParseException {
+
+    public void loadAppointments(String filePath) throws ParseException {
 
         List<String[]> rows = CSVUtil.readCSV(filePath);
 
@@ -175,8 +195,8 @@ public class AppointmentService {
 
             Appointment a = new Appointment(
                     new EntityID(data[0]),
-                    new EntityID( data[1]),
-                    new EntityID( data[2]),
+                    new EntityID(data[1]),
+                    new EntityID(data[2]),
                     DateUtil.getLocalDate(data[3]),
                     AppointmentStatus.getStatus(data[4])
             );
@@ -190,8 +210,8 @@ public class AppointmentService {
 
         List<String> lines = appointmentStore.getAll()
                 .stream()
-                .sorted(Comparator.comparing(d ->d.getAppointmentId().toString()))
-                .map( a-> a.getAppointmentId()+ "," +
+                .sorted(Comparator.comparing(d -> d.getAppointmentId().toString()))
+                .map(a -> a.getAppointmentId() + "," +
                         a.getPatient().getId() + "," +
                         a.getDoctor().getId() + "," +
                         DateUtil.getLocalDateStr(a.getAppointmentTime()) + "," +

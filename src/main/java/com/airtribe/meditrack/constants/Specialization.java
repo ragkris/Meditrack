@@ -5,10 +5,10 @@ public enum Specialization {
 
     CARDIOLOGY("CARDIOLOGY"),
     NEUROLOGY("NEUROLOGY"),
-    ORTHOPEDICS ("ORTHOPEDICS"),
-    PEDIATRICS ("PEDIATRICS"),
-    DERMATOLOGY ("DERMATOLOGY"),
-    GENERAL_MEDICINE ("GENERAL_MEDICINE");
+    ORTHOPEDICS("ORTHOPEDICS"),
+    PEDIATRICS("PEDIATRICS"),
+    DERMATOLOGY("DERMATOLOGY"),
+    GENERAL_MEDICINE("GENERAL_MEDICINE");
 
 
     private String value;
@@ -17,11 +17,7 @@ public enum Specialization {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public static Specialization getSpecialization(String value){
+    public static Specialization getSpecialization(String value) {
 
         for (Specialization spl : Specialization.values()) {
 
@@ -33,6 +29,10 @@ public enum Specialization {
         throw new IllegalArgumentException(
                 "Invalid Specialization: " + value
         );
+    }
+
+    public String getValue() {
+        return value;
     }
 
 

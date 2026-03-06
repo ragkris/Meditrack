@@ -15,13 +15,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public  class AIAppointmentBooking extends MainMenu {
+public class AIAppointmentBooking extends MainMenu {
 
     DoctorService doctorService = DoctorService.getInstance();
     PatientService patientService = PatientService.getInstance();
     AppointmentService appointmentService = AppointmentService.getInstance();
 
-    public  void help() {
+    public void help() {
 
         boolean aiMenu = true;
         boolean updateAppointmentCheck = false;
@@ -32,7 +32,7 @@ public  class AIAppointmentBooking extends MainMenu {
             System.out.println("9. Main Menu");
             System.out.println("0. Exit");
 
-            int choice = readInt("Enter choice: ") ;
+            int choice = readInt("Enter choice: ");
             switch (choice) {
                 case 1 -> {
 
@@ -54,30 +54,30 @@ public  class AIAppointmentBooking extends MainMenu {
                         case Constants.CONFIRM_YES -> {
                             String d = readString("Enter the doctor ID to book appointment with : ");
                             Doctor doctor = doctorService.search(new EntityID(d));
-                            LocalDate dt = LocalDate.parse( readString("Appointment Time (yyyy-MM-dd): "));
+                            LocalDate dt = LocalDate.parse(readString("Appointment Time (yyyy-MM-dd): "));
 
                             System.out.println("Available Slots : ");
-                            System.out.println(suggestAvailableSlots(doctor,dt ));
+                            System.out.println(suggestAvailableSlots(doctor, dt));
 
-                            LocalDateTime time = LocalDateTime.parse( readString("Appointment Time (yyyy-MM-dd HH:mm): "));
+                            LocalDateTime time = LocalDateTime.parse(readString("Appointment Time (yyyy-MM-dd HH:mm): "));
 
 
                             Patient patient = null;
                             String existing = readString("Have you visited our hospital before ? (Y/N): ");
-                            if(Constants.CONFIRM_YES.equalsIgnoreCase(existing)){
+                            if (Constants.CONFIRM_YES.equalsIgnoreCase(existing)) {
                                 String name = readString("Name :");
-                                List<Patient>  patients= patientService.search(name);
+                                List<Patient> patients = patientService.search(name);
                                 String pid = readString("Confirm details : ");
                                 patient = patientService.search(new EntityID(pid));
                                 System.out.println(patient);
                             }
-                            if(patient == null){
+                            if (patient == null) {
                                 System.out.println("Adding a new patient:");
-                                String name =  readString("Name: ");
+                                String name = readString("Name: ");
                                 String phone = readString("Phone: ");
                                 String email = readString("Email: ");
-                                int age =  readInt("Age: ");
-                                String gender =  readString("Gender: ");
+                                int age = readInt("Age: ");
+                                String gender = readString("Gender: ");
                                 patient = new Patient(null, name, phone, email, age, gender); //ID will be generated only after validation passes
 
                                 patientService.addPatient(patient);
@@ -86,12 +86,12 @@ public  class AIAppointmentBooking extends MainMenu {
                                 patientService.savePatients(Constants.PATIENTS_CSV);
                             }
 
-                            Appointment appointment = new Appointment( null, patient, doctor, time,AppointmentStatus.CONFIRMED);
+                            Appointment appointment = new Appointment(null, patient, doctor, time, AppointmentStatus.CONFIRMED);
 
 
                             appointment = appointmentService.bookAppointment(appointment);
 
-                            System.out.println("Appointment has been booked successfully. Appointment ID : "+appointment.getAppointmentId());
+                            System.out.println("Appointment has been booked successfully. Appointment ID : " + appointment.getAppointmentId());
                             appointmentService.saveAppointments(Constants.APPOINTMENTS_CSV);
                         }
                         default -> {
@@ -101,7 +101,7 @@ public  class AIAppointmentBooking extends MainMenu {
 
                 }
 
-                case 9 ->  {
+                case 9 -> {
 
                     startMainMenu();
                 }
@@ -117,11 +117,11 @@ public  class AIAppointmentBooking extends MainMenu {
 
     }
 
-    public  List<LocalDateTime> suggestAvailableSlots(
+    public List<LocalDateTime> suggestAvailableSlots(
             Doctor doctor,
             LocalDate date) {
 
-        System.out.println("doc - >"+doctor);
+        System.out.println("doc - >" + doctor);
         List<LocalDateTime> slots = AIHelper.suggestSlots(date);
 
         for (Appointment a : appointmentService.getAllAppointmentsByDocId(doctor.getId().getValue())) {

@@ -5,12 +5,13 @@ import com.airtribe.meditrack.entity.Patient;
 import com.airtribe.meditrack.entity.id.EntityID;
 import com.airtribe.meditrack.service.PatientService;
 
+import java.util.Collections;
 import java.util.List;
 
 public class PatientMenu extends MainMenu {
-    private final PatientService patientService =  PatientService.getInstance();
+    private final PatientService patientService = PatientService.getInstance();
 
-    public  void show() {
+    public void show() {
 
         boolean patientMenu = true;
         boolean updatePatientCsv = false;
@@ -20,7 +21,7 @@ public class PatientMenu extends MainMenu {
             System.out.println("\n===== Meditrack Clinic System - Patients =====");
             System.out.println("1. Add Patient");
             System.out.println("2. Search By ID");
-            System.out.println("3. Search By Name" );
+            System.out.println("3. Search By Name");
             System.out.println("4. View All Patients");
             System.out.println("5. Update Patient Contact Details");
             System.out.println("6. Delete Patient");
@@ -29,7 +30,7 @@ public class PatientMenu extends MainMenu {
             System.out.println("0. Exit");
 
 
-            int choice =   readInt("Enter choice: ");
+            int choice = readInt("Enter choice: ");
             switch (choice) {
                 case 1 -> {
 
@@ -47,22 +48,8 @@ public class PatientMenu extends MainMenu {
                 case 2 -> {
                     String pid = readString("Enter Patient ID : ");
                     Patient patient = patientService.search(new EntityID(pid));
+                    displayPatient(Collections.singletonList(patient));
 
-                    System.out.println("+---------+------------------------------------+---------------+------------------------+-----+-------");
-                    System.out.println("| ID      |  Name                              |  Phone        | Email                  | Age | Gender  ");
-                    System.out.println("+---------+------------------------------------+---------------+------------------------+-----+-------");
-
-
-                        System.out.printf("| %-5s | %-35s |  %-12s | %-22s | %-3s | %-5s \n",
-                                patient.getId(),
-                                patient.getName(),
-                                patient.getPhone(),
-                                patient.getEmail(),
-                                patient.getAge(),
-                                patient.getGender());
-
-
-                    System.out.println("+----------+------------------------------------+---------------+--------------------+-----+-------");
 
                 }
                 case 3 -> {
@@ -70,42 +57,14 @@ public class PatientMenu extends MainMenu {
                     List<Patient> patients = patientService.search(name);
 
                     System.out.println("Patients List : ");
-                    System.out.println("+---------+------------------------------------+---------------+------------------------+-----+-------");
-                    System.out.println("| ID      |  Name                              |  Phone        | Email                  | Age | Gender  ");
-                    System.out.println("+---------+------------------------------------+---------------+------------------------+-----+-------");
-
-                    for (Patient s : patients) {
-                        System.out.printf("| %-5s | %-35s |  %-12s | %-22s | %-3s | %-5s \n",
-                                s.getId(),
-                                s.getName(),
-                                s.getPhone(),
-                                s.getEmail(),
-                                s.getAge(),
-                                s.getGender());
-                    }
-
-                    System.out.println("+----------+------------------------------------+---------------+--------------------+-----+-------");
+                  displayPatient(patients);
 
                 }
                 case 4 -> {
                     List<Patient> patients = patientService.getAllPatients();
 
                     System.out.println("Patients List : ");
-                    System.out.println("+---------+------------------------------------+---------------+------------------------+-----+-------");
-                    System.out.println("| ID      |  Name                              |  Phone        | Email                  | Age | Gender  ");
-                    System.out.println("+---------+------------------------------------+---------------+------------------------+-----+-------");
-
-                    for (Patient s : patients) {
-                        System.out.printf("| %-5s | %-35s |  %-12s | %-22s | %-3s | %-5s \n",
-                                s.getId(),
-                                s.getName(),
-                                s.getPhone(),
-                                s.getEmail(),
-                                s.getAge(),
-                                s.getGender());
-                    }
-
-                    System.out.println("+----------+------------------------------------+---------------+--------------------+-----+-------");
+                    displayPatient(patients);
 
                 }
                 case 5 -> {
@@ -145,19 +104,36 @@ public class PatientMenu extends MainMenu {
         }
 
 
-
     }
 
 
-
-    private  void checkUpdate(boolean updatePatientCsv) {
-        if(updatePatientCsv){
+    private void checkUpdate(boolean updatePatientCsv) {
+        if (updatePatientCsv) {
             System.out.println(" Persisting Changes to CSV");
             patientService.savePatients(Constants.PATIENTS_CSV);
         }
 
     }
 
+    private void displayPatient(List<Patient> patients){
+        System.out.println("+---------+------------------------------------+---------------+------------------------+-----+-------");
+        System.out.println("| ID      |  Name                              |  Phone        | Email                  | Age | Gender  ");
+        System.out.println("+---------+------------------------------------+---------------+------------------------+-----+-------");
+
+        for (Patient s : patients) {
+            System.out.printf("| %-5s | %-35s |  %-12s | %-22s | %-3s | %-5s \n",
+                    s.getId(),
+                    s.getName(),
+                    s.getPhone(),
+                    s.getEmail(),
+                    s.getAge(),
+                    s.getGender());
+        }
+
+        System.out.println("+----------+------------------------------------+---------------+--------------------+-----+-------");
+
+
+    }
 
 
 }

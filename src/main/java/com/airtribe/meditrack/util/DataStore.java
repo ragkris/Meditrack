@@ -1,7 +1,8 @@
 package com.airtribe.meditrack.util;
 
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 
 public class DataStore<T> {
 
@@ -17,7 +18,7 @@ public class DataStore<T> {
 
 
     public Collection<T> getAll() {
-        System.out.println("total appt"+store.size());
+        System.out.println("total appt" + store.size());
         return store.values();
     }
 

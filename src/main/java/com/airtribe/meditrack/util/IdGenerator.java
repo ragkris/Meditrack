@@ -31,7 +31,7 @@ public class IdGenerator {
         return new EntityID("APT-" + (++appointmentCounter));
     }
 
-    public static EntityID generateInvoiceId(){
-        return new EntityID("INV-"+(++invoiceCounter));
+    public static EntityID generateInvoiceId() {
+        return new EntityID("INV-" + (++invoiceCounter));
     }
 }

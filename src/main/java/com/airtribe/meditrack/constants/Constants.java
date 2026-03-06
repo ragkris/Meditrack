@@ -6,9 +6,9 @@ public class Constants {
     public static final String DOCTORS_CSV = "doctors.csv";
     public static final String APPOINTMENTS_CSV = "appointments.csv";
 
-    public static final String PATIENTS_HEADER="ID,NAME,PHONE,EMAIL,AGE,GENDER";
-    public static final String DOCTORS_HEADER="ID,NAME,PHONE,EMAIL,SPECIALIZATION,CONSULTATION_FEE";
-    public static final String APPOINTMENTS_HEADER="ID,PATIENT_ID,DOCTOR_ID,APPOINTMENT_TIME,STATUS";
+    public static final String PATIENTS_HEADER = "ID,NAME,PHONE,EMAIL,AGE,GENDER";
+    public static final String DOCTORS_HEADER = "ID,NAME,PHONE,EMAIL,SPECIALIZATION,CONSULTATION_FEE";
+    public static final String APPOINTMENTS_HEADER = "ID,PATIENT_ID,DOCTOR_ID,APPOINTMENT_TIME,STATUS";
 
 
     public static final double TAX_RATE = 0.18;

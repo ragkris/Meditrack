@@ -1,17 +1,22 @@
 package com.airtribe.meditrack.test;
 
-import com.airtribe.meditrack.billing.BillingStrategy;
 import com.airtribe.meditrack.billing.DoctorBillingStrategy;
 import com.airtribe.meditrack.billing.LabBillingStrategy;
 import com.airtribe.meditrack.constants.AppointmentStatus;
 import com.airtribe.meditrack.constants.Specialization;
-import com.airtribe.meditrack.entity.*;
+import com.airtribe.meditrack.entity.Appointment;
+import com.airtribe.meditrack.entity.BillSummary;
+import com.airtribe.meditrack.entity.Doctor;
+import com.airtribe.meditrack.entity.Patient;
 import com.airtribe.meditrack.entity.bill.DoctorBill;
 import com.airtribe.meditrack.entity.bill.LabBill;
 import com.airtribe.meditrack.entity.id.EntityID;
 import com.airtribe.meditrack.interfaces.Payable;
-import com.airtribe.meditrack.service.*;
-import com.airtribe.meditrack.util.*;
+import com.airtribe.meditrack.service.AppointmentService;
+import com.airtribe.meditrack.service.DoctorService;
+import com.airtribe.meditrack.service.PatientService;
+import com.airtribe.meditrack.util.AIHelper;
+import com.airtribe.meditrack.util.IdGenerator;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,9 +26,9 @@ public class TestRunner {
 
     public static void main(String[] args) {
 
-        DoctorService doctorService =  DoctorService.getInstance();
-        PatientService patientService =  PatientService.getInstance();
-        AppointmentService appointmentService =  AppointmentService.getInstance();
+        DoctorService doctorService = DoctorService.getInstance();
+        PatientService patientService = PatientService.getInstance();
+        AppointmentService appointmentService = AppointmentService.getInstance();
 
         Doctor doctor = new Doctor(
                 IdGenerator.generateDoctorId(),
@@ -50,7 +55,7 @@ public class TestRunner {
         Appointment appointment = new Appointment(
                 IdGenerator.generateAppointmentId(),
                 patient, doctor,
-                LocalDateTime.now(),AppointmentStatus.PENDING
+                LocalDateTime.now(), AppointmentStatus.PENDING
         );
 
         appointmentService.bookAppointment(appointment);
@@ -63,9 +68,6 @@ public class TestRunner {
 
         System.out.println("\nAppointment:");
         System.out.println(appointment);
-
-
-
 
 
         //Deep Copy
@@ -89,7 +91,7 @@ public class TestRunner {
         );
 
         Appointment appt1 = new Appointment(
-               IdGenerator.generateAppointmentId(),
+                IdGenerator.generateAppointmentId(),
                 p1,
                 d1,
                 LocalDateTime.now(), AppointmentStatus.CONFIRMED
@@ -100,13 +102,11 @@ public class TestRunner {
 
 
         //Shallow Copy
-        Patient p2= p1.clone();
+        Patient p2 = p1.clone();
         p2.setAge(55);
 
 
-
         //immutable
-
 
 
         //Dynamic Dispatch
@@ -115,7 +115,6 @@ public class TestRunner {
         BillSummary summary = dr.generateBill();
 
         System.out.println(summary.toString());
-
 
 
         Payable lab = new LabBill(new EntityID("B101"), 200, new LabBillingStrategy(100));
@@ -135,9 +134,9 @@ public class TestRunner {
         System.out.println("Recommended doctor type: " + specialization);
 
         List<LocalDateTime> slots =
-                AIHelper.suggestSlots (LocalDate.now());
+                AIHelper.suggestSlots(LocalDate.now());
 
-        for(LocalDateTime slot : slots) {
+        for (LocalDateTime slot : slots) {
             System.out.println(slot);
         }
 

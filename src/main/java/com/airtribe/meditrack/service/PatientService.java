@@ -13,12 +13,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class PatientService  implements Searchable<Patient> {
+public class PatientService implements Searchable<Patient> {
 
-    private final AppointmentService appointmentService = AppointmentService.getInstance();
-
-    private final DataStore<Patient> patientStore;
     private static PatientService instance;
+    private final AppointmentService appointmentService = AppointmentService.getInstance();
+    private final DataStore<Patient> patientStore;
 
 
     private PatientService(DataStore<Patient> store) {
@@ -26,7 +25,7 @@ public class PatientService  implements Searchable<Patient> {
     }
 
 
-    public static PatientService getInstance( ) {
+    public static PatientService getInstance() {
         if (instance == null) {
             DataStore<Patient> store = new DataStore<>();
             instance = new PatientService(store);
@@ -37,13 +36,13 @@ public class PatientService  implements Searchable<Patient> {
 
     // CREATE
     public void addPatient(Patient patient) {
-        EntityID id= IdGenerator.generatePatientId();
+        EntityID id = IdGenerator.generatePatientId();
         patient.setId(id);
         patientStore.add(id.getValue(), patient);
     }
 
     // READ
-   public List<Patient> getAllPatients() {
+    public List<Patient> getAllPatients() {
         return new ArrayList<>(patientStore.getAll());
     }
 
@@ -103,33 +102,31 @@ public class PatientService  implements Searchable<Patient> {
     }
 
 
-
     public void savePatients(String filePath) {
 
         List<String> lines = patientStore.getAll()
                 .stream()
                 .sorted(Comparator.comparing(p -> p.getId().toString()))
                 .map(p -> p.getId() + "," +
-                    p.getName() + "," +
-                    p.getPhone() + "," +
-                    p.getEmail() + "," +
-                    p.getAge() + "," +
-                    p.getGender()).toList();
-
+                        p.getName() + "," +
+                        p.getPhone() + "," +
+                        p.getEmail() + "," +
+                        p.getAge() + "," +
+                        p.getGender()).toList();
 
 
         CSVUtil.writeCSV(filePath, lines, Constants.PATIENTS_HEADER);
     }
 
 
-    public  void loadPatients(String filePath) {
+    public void loadPatients(String filePath) {
 
         List<String[]> rows = CSVUtil.readCSV(filePath);
 
         for (String[] data : rows) {
 
             Patient patient = new Patient(
-                   null,
+                    null,
                     data[1],
                     data[2],
                     data[3],

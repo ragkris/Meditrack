@@ -1,7 +1,6 @@
 package com.airtribe.meditrack.menu;
 
 import com.airtribe.meditrack.service.AIAppointmentBooking;
-import com.airtribe.meditrack.service.AppointmentService;
 
 import java.util.Scanner;
 
@@ -34,8 +33,7 @@ public class MainMenu {
     }
 
 
-
-    private  void printMainMenu() {
+    private void printMainMenu() {
 
         System.out.println("\n===== Meditrack Clinic System =====");
 
@@ -49,10 +47,7 @@ public class MainMenu {
     }
 
 
-
-
-
-    protected   int readInt(String prompt) {
+    protected int readInt(String prompt) {
         while (true) {
             try {
                 System.out.print(prompt);
@@ -63,7 +58,7 @@ public class MainMenu {
         }
     }
 
-    protected   double readDouble(String prompt) {
+    protected double readDouble(String prompt) {
         while (true) {
             try {
                 System.out.print(prompt);
@@ -74,7 +69,7 @@ public class MainMenu {
         }
     }
 
-    protected  String readString(String prompt) {
+    protected String readString(String prompt) {
         System.out.print(prompt);
         return scanner.nextLine();
     }

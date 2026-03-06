@@ -12,10 +12,6 @@ public enum AppointmentStatus {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
-
     public static AppointmentStatus getStatus(String value) {
 
         for (AppointmentStatus spl : AppointmentStatus.values()) {
@@ -28,5 +24,9 @@ public enum AppointmentStatus {
         throw new IllegalArgumentException(
                 "Invalid AppointmentStatus: " + value
         );
+    }
+
+    public String getValue() {
+        return value;
     }
 }

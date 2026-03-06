@@ -7,7 +7,7 @@ public class LabBillingStrategy implements BillingStrategy {
     private double taxRate;
     private double labServiceCharge;
 
-    public LabBillingStrategy( double labServiceCharge) {
+    public LabBillingStrategy(double labServiceCharge) {
         this.taxRate = Constants.TAX_RATE;
         this.labServiceCharge = labServiceCharge;
     }

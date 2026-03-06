@@ -4,21 +4,19 @@ package com.airtribe.meditrack.entity;
 import com.airtribe.meditrack.constants.Specialization;
 import com.airtribe.meditrack.entity.id.EntityID;
 
-import javax.print.Doc;
-
-public class Doctor extends Person implements Cloneable{
+public class Doctor extends Person implements Cloneable {
 
     private Specialization specialization;
     private double consultationFee;
 
     public Doctor(EntityID id, String name, String phone, String email,
-                  Specialization  specialization, double consultationFee) {
+                  Specialization specialization, double consultationFee) {
         super(id, name, phone, email);
         this.specialization = specialization;
         this.consultationFee = consultationFee;
     }
 
-    public Specialization  getSpecialization() {
+    public Specialization getSpecialization() {
         return specialization;
     }
 

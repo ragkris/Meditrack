@@ -1,18 +1,18 @@
 package com.airtribe.meditrack.util;
 
 import com.airtribe.meditrack.constants.Specialization;
-import com.airtribe.meditrack.entity.Appointment;
-import com.airtribe.meditrack.entity.Doctor;
 import com.airtribe.meditrack.service.AppointmentService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AIHelper {
 
-    AppointmentService appointmentService=  AppointmentService.getInstance();
     private static final Map<String, Specialization> symptomRules = new HashMap<>();
 
     static {
@@ -28,6 +28,8 @@ public class AIHelper {
         symptomRules.put("bone", Specialization.ORTHOPEDICS);
         symptomRules.put("flu", Specialization.GENERAL_MEDICINE);
     }
+
+    AppointmentService appointmentService = AppointmentService.getInstance();
 
     public static Specialization recommendSpecialization(String symptom) {
 
@@ -60,7 +62,6 @@ public class AIHelper {
 
         return slots;
     }
-
 
 
 }
