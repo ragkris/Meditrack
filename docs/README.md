@@ -1,4 +1,6 @@
-# MediTrack -- Clinic & Appointment Management System
+# MediTrack -- Clinic & Appointment Management System - Project Submission
+
+#### author : Kavitha Krishnan
 
 ## Overview
 
