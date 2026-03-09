@@ -1,5 +1,7 @@
 # MediTrack -- Clinic & Appointment Management System - Project Submission
-####author : Kavitha Krishnan
+
+#### author : Kavitha Krishnan
+
 ## Overview
 
 **MediTrack** is a Java-based console application designed to manage a
