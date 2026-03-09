@@ -34,7 +34,7 @@ public class TestRunner {
                 IdGenerator.generateDoctorId(),
                 "Dr.Ravi",
                 "9876543210",
-                "ravi@clinic.com",
+                "ravi@mail.com",
                 Specialization.CARDIOLOGY,
                 500
         );
@@ -43,7 +43,7 @@ public class TestRunner {
 
         Patient patient = new Patient(
                 IdGenerator.generatePatientId(),
-                "Anita",
+                "Anitha",
                 "9871234567",
                 "anita@mail.com",
                 30,
@@ -83,7 +83,7 @@ public class TestRunner {
 
         Doctor d1 = new Doctor(
                 new EntityID("DOC101"),
-                "Dr Kumar",
+                "Dr Karthik",
                 "9876543210",
                 "kumar@clinic.com",
                 Specialization.CARDIOLOGY,
@@ -117,11 +117,11 @@ public class TestRunner {
         System.out.println(summary.toString());
 
 
-        Payable lab = new LabBill(new EntityID("B101"), 200, new LabBillingStrategy(100));
+        Payable lab = new LabBill(new EntityID("B101"), 200, new LabBillingStrategy());
 
         BillSummary summary1 = dr.generateBill();
 
-        System.out.println(summary.toString());
+        System.out.println(summary);
 
 
         //AI Helper

@@ -5,10 +5,11 @@ import com.airtribe.meditrack.billing.BillingStrategy;
 
 public class Bill {
 
-    private String billId;
-    private double baseAmount;
+    private final String billId;
+    private final double baseAmount;
+    private String patientId;
 
-    private BillingStrategy billingStrategy;
+    private final BillingStrategy billingStrategy;
 
     public Bill(String billId,
                 double baseAmount,

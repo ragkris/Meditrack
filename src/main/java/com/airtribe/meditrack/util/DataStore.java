@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 
 public class DataStore<T> {
 
-    private LinkedHashMap<String, T> store = new LinkedHashMap<>();
+    private final LinkedHashMap<String, T> store = new LinkedHashMap<>();
 
     public void add(String id, T obj) {
         store.put(id, obj);
@@ -18,7 +18,6 @@ public class DataStore<T> {
 
 
     public Collection<T> getAll() {
-        System.out.println("total appt" + store.size());
         return store.values();
     }
 

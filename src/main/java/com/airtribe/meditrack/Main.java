@@ -18,6 +18,7 @@ public class Main {
         if (args.length > 0 && args[0].equals("--loadData")) {
 
             System.out.println("Loading persisted data...");
+            System.out.println("Please make sure that your csv has got appropriate headers");
 
             PatientService.getInstance().loadPatients(Constants.PATIENTS_CSV);
             DoctorService.getInstance().loadDoctors(Constants.DOCTORS_CSV);

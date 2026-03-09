@@ -50,7 +50,7 @@ public class AIHelper {
 
         List<LocalDateTime> slots = new ArrayList<>();
 
-        LocalTime start = LocalTime.of(9, 0);
+        LocalTime start = LocalTime.of(10, 0);
         LocalTime end = LocalTime.of(20, 0);
 
         while (!start.isAfter(end)) {

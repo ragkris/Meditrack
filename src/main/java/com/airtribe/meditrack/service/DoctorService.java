@@ -37,7 +37,7 @@ public class DoctorService implements Searchable<Doctor> {
     // CREATE
     public void addDoctor(Doctor doctor) {
         doctor.setId(IdGenerator.generateDoctorId());
-        doctorStore.add(doctor.getId().getValue(), doctor);
+        doctorStore.add(doctor.getId().value(), doctor);
     }
 
     // READ
@@ -49,9 +49,8 @@ public class DoctorService implements Searchable<Doctor> {
     @Override
     // Search by DoctorID
     public Doctor search(EntityID id) {
-        System.out.println(id.getValue());
-        System.out.println(doctorStore.getAll());
-        return doctorStore.get(id.getValue());
+
+        return doctorStore.get(id.value());
     }
 
     @Override
@@ -59,30 +58,22 @@ public class DoctorService implements Searchable<Doctor> {
     public List<Doctor> search(String specInput) {
 
 
-        List<Doctor> result = new ArrayList<>();
 
-        for (Doctor d : doctorStore.getAll()) {
-            if (d.getSpecialization().getValue().equalsIgnoreCase(specInput)) {
-                result.add(d);
-            }
-        }
-
-        return result;
+        return doctorStore.getAll()
+                .stream()
+                .filter(d -> d.getSpecialization().getValue()
+                        .equalsIgnoreCase(specInput))
+                .toList();
     }
 
     // Search by Specialization
     public List<Doctor> search(Specialization specialization) {
 
 
-        List<Doctor> result = new ArrayList<>();
-
-        for (Doctor d : doctorStore.getAll()) {
-            if (d.getSpecialization() == (specialization)) {
-                result.add(d);
-            }
-        }
-
-        return result;
+        return doctorStore.getAll()
+                .stream()
+                .filter(d -> d.getSpecialization()==specialization)
+                .toList();
     }
 
 
@@ -115,7 +106,6 @@ public class DoctorService implements Searchable<Doctor> {
         appointmentService.removeAppointment(id);
     }
 
-
     public void saveDoctors(String filePath) {
 
         List<String> lines = doctorStore.getAll()
@@ -133,7 +123,8 @@ public class DoctorService implements Searchable<Doctor> {
     }
 
     public void loadDoctors(String filePath) {
-
+        System.out.println("--------------------------------------------------------------------------------------------------------------------");
+        System.out.println("Doctors csv with the headers (in order) : "+Constants.DOCTORS_HEADER);
         List<String[]> rows = CSVUtil.readCSV(filePath);
 
         for (String[] data : rows) {
@@ -147,7 +138,10 @@ public class DoctorService implements Searchable<Doctor> {
                     Double.parseDouble(data[5])
             );
             d.setId(new EntityID(data[0]));
-            doctorStore.add(d.getId().getValue(), d);
+            doctorStore.add(d.getId().value(), d);
         }
+        IdGenerator.findMaxDoctorId(doctorStore.getAll());
+        System.out.println("Doctor loaded to store from csv : "+doctorStore.getAll().size());
+        System.out.println("--------------------------------------------------------------------------------------------------------------------");
     }
 }

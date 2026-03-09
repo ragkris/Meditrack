@@ -38,7 +38,7 @@ public class PatientService implements Searchable<Patient> {
     public void addPatient(Patient patient) {
         EntityID id = IdGenerator.generatePatientId();
         patient.setId(id);
-        patientStore.add(id.getValue(), patient);
+        patientStore.add(id.value(), patient);
     }
 
     // READ
@@ -49,7 +49,7 @@ public class PatientService implements Searchable<Patient> {
     @Override
     // Search by PatientId
     public Patient search(EntityID id) {
-        return patientStore.get(id.getValue());
+        return patientStore.get(id.value());
     }
 
     @Override
@@ -120,6 +120,8 @@ public class PatientService implements Searchable<Patient> {
 
 
     public void loadPatients(String filePath) {
+        System.out.println("--------------------------------------------------------------------------------------------------------------------");
+        System.out.println("Patients csv with the headers (in order) : "+Constants.PATIENTS_HEADER);
 
         List<String[]> rows = CSVUtil.readCSV(filePath);
 
@@ -134,9 +136,12 @@ public class PatientService implements Searchable<Patient> {
                     data[5]
             );
             patient.setId(new EntityID(data[0]));
-            patientStore.add(patient.getId().getValue(), patient);
+            patientStore.add(patient.getId().value(), patient);
 
         }
-        System.out.println(patientStore.getAll().size());
+        System.out.println("Patients loaded to store from csv : "+patientStore.getAll().size());
+        IdGenerator.findMaxPatientId(patientStore.getAll());
+        System.out.println("--------------------------------------------------------------------------------------------------------------------");
+
     }
 }

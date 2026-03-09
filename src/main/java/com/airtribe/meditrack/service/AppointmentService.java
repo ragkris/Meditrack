@@ -1,19 +1,24 @@
 package com.airtribe.meditrack.service;
 
 
+import com.airtribe.meditrack.billing.DoctorBillingStrategy;
+import com.airtribe.meditrack.billing.LabBillingStrategy;
 import com.airtribe.meditrack.constants.AppointmentStatus;
 import com.airtribe.meditrack.constants.Constants;
 import com.airtribe.meditrack.entity.Appointment;
+import com.airtribe.meditrack.entity.BillSummary;
+import com.airtribe.meditrack.entity.Doctor;
+import com.airtribe.meditrack.entity.bill.DoctorBill;
+import com.airtribe.meditrack.entity.bill.LabBill;
 import com.airtribe.meditrack.entity.id.EntityID;
 import com.airtribe.meditrack.exception.AppointmentNotFoundException;
+import com.airtribe.meditrack.interfaces.Payable;
 import com.airtribe.meditrack.observer.AppointmentExpiryObserver;
 import com.airtribe.meditrack.observer.AppointmentObserver;
-import com.airtribe.meditrack.util.CSVUtil;
-import com.airtribe.meditrack.util.DataStore;
-import com.airtribe.meditrack.util.DateUtil;
-import com.airtribe.meditrack.util.IdGenerator;
+import com.airtribe.meditrack.util.*;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -43,7 +48,7 @@ public class AppointmentService {
     public Appointment bookAppointment(Appointment appointment) {
         if (appointment.getAppointmentId() == null) appointment.setAppointmentId(IdGenerator.generateAppointmentId());
         appointment.setStatus(AppointmentStatus.CONFIRMED);
-        appointmentStore.add(appointment.getAppointmentId().getValue(), appointment);
+        appointmentStore.add(appointment.getAppointmentId().value(), appointment);
         return appointment;
 
     }
@@ -60,7 +65,7 @@ public class AppointmentService {
         appointment.notifyObservers();
 
         appointmentStore.add(
-                appointment.getAppointmentId().getValue(),
+                appointment.getAppointmentId().value(),
                 appointment
         );
     }
@@ -101,7 +106,7 @@ public class AppointmentService {
         for (Appointment a : appointmentStore.getAll()) {
             try {
 //                System.out.println(a);
-                if (a.getDoctor().getId().getValue().equalsIgnoreCase(id)) {
+                if (a.getDoctor().getId().value().equalsIgnoreCase(id)) {
                     result.add(a);
                 }
             } catch (Exception e) {
@@ -118,7 +123,7 @@ public class AppointmentService {
         for (Appointment a : appointmentStore.getAll()) {
             try {
 //                System.out.println(a);
-                if (a.getPatient().getId().getValue().equalsIgnoreCase(id)) {
+                if (a.getPatient().getId().value().equalsIgnoreCase(id)) {
                     result.add(a);
                 }
             } catch (Exception e) {
@@ -133,12 +138,15 @@ public class AppointmentService {
     //CANCEL appointment
     public void cancelAppointment(String id) {
 
-        Appointment appt = getAppointment(id);
-        appt.setStatus(AppointmentStatus.CANCELLED);
+        List<Appointment> app = getAppointment(id);
+        if(app!=null && app.size()==1) {
+            app.get(0).setStatus(AppointmentStatus.CANCELLED);
+        }
 
     }
 
     public boolean removeAppointment(String id) {
+        System.out.println("Remove appt "+id);
         boolean updated = false;
         String person = id.startsWith("DOC-") ? "DOCTOR" : id.startsWith("PAT-") ? "PATIENT" : "";
         List<Appointment> rm = null;
@@ -152,8 +160,9 @@ public class AppointmentService {
             }
         }
         if (rm != null)
+            System.out.println(rm);
             for (Appointment r : rm) {
-                appointmentStore.remove(r.getAppointmentId().getValue());
+                appointmentStore.remove(r.getAppointmentId().value());
                 updated = true;
             }
         return updated;
@@ -183,12 +192,53 @@ public class AppointmentService {
 
     public void updateAppointment(Appointment app) {
 
-        appointmentStore.add(app.getAppointmentId().getValue(), app);
+        appointmentStore.add(app.getAppointmentId().value(), app);
 
     }
 
-    public void loadAppointments(String filePath) throws ParseException {
+    public void generateBill(String apptID,boolean isLab){
+        List<Appointment> appts = getAppointment(apptID);
 
+        if(appts!=null && appts.size()==1) {
+            Appointment appointment = appts.get(0);
+
+            Payable dr = new DoctorBill(IdGenerator.generateInvoiceId(),
+                    appointment.getDoctor().getConsultationFee(), new DoctorBillingStrategy());
+
+            BillSummary summary = dr.generateBill();
+
+            System.out.println(summary.toString());
+        }
+
+        if(isLab) {
+
+            Payable lab = new LabBill(IdGenerator.generateInvoiceId(), Constants.LAB_FEE, new LabBillingStrategy());
+
+            BillSummary summary1 = lab.generateBill();
+
+            System.out.println(summary1.toString());
+        }
+    }
+
+
+    public List<LocalDateTime> suggestAvailableSlots(
+            Doctor doctor,
+            LocalDate date) {
+
+//        System.out.println("Doctor D- >" + doctor);
+        List<LocalDateTime> slots = AIHelper.suggestSlots(date);
+
+        for (Appointment a : getAllAppointmentsByDocId(doctor.getId().value())) {
+
+            slots.remove(a.getAppointmentTime());
+        }
+
+        return slots;
+    }
+
+    public void loadAppointments(String filePath) throws ParseException {
+        System.out.println("--------------------------------------------------------------------------------------------------------------------");
+        System.out.println("Appointment csv with the headers (in order) : "+Constants.APPOINTMENTS_HEADER);
         List<String[]> rows = CSVUtil.readCSV(filePath);
 
         for (String[] data : rows) {
@@ -201,8 +251,11 @@ public class AppointmentService {
                     AppointmentStatus.getStatus(data[4])
             );
 
-            appointmentStore.add(a.getAppointmentId().getValue(), a);
+            appointmentStore.add(a.getAppointmentId().value(), a);
         }
+        System.out.println("Appointments loaded to store from csv : "+appointmentStore.getAll().size());
+        IdGenerator.findMaxApptId(appointmentStore.getAll());
+        System.out.println("--------------------------------------------------------------------------------------------------------------------");
     }
 
     public void saveAppointments(String filePath) {

@@ -4,12 +4,16 @@ import com.airtribe.meditrack.constants.Constants;
 import com.airtribe.meditrack.constants.Specialization;
 import com.airtribe.meditrack.entity.Doctor;
 import com.airtribe.meditrack.entity.Patient;
+import com.airtribe.meditrack.service.AppointmentService;
 import com.airtribe.meditrack.service.DoctorService;
+import com.airtribe.meditrack.util.DisplayUtil;
 
 import java.util.List;
 
 public class DoctorMenu extends MainMenu {
     private final static DoctorService doctorService = DoctorService.getInstance();
+    private final static AppointmentService appointmentService = AppointmentService.getInstance();
+
 
 
     public void show() {
@@ -17,6 +21,7 @@ public class DoctorMenu extends MainMenu {
         boolean doctorMenu = true;
         boolean updateDoctorCheck = false;
         while (doctorMenu) {
+            try{
             System.out.println("1. Add Doctor");
             System.out.println("2. View Doctors");
             System.out.println("3. Search Doctor");
@@ -49,7 +54,7 @@ public class DoctorMenu extends MainMenu {
                 }
                 case 2 -> {
                     List<Doctor> doctors = doctorService.getAllDoctors();
-                    displayDoctor(doctors);
+                    DisplayUtil.displayDoctor(doctors);
                 }
 
                 case 3 -> {
@@ -61,20 +66,20 @@ public class DoctorMenu extends MainMenu {
 
                     List<Doctor> doctors = doctorService.search(specInput);
 
-                    displayDoctor(doctors);
+                    DisplayUtil.displayDoctor(doctors);
 
                 }
                 case 4 -> {
-                    String pid = readString("Enter Doctor ID : ");
+                    String pid = readString("Enter Doctor ID : ").toUpperCase();
                     String phnum = readString("Enter Phone Number:");
-                    String email = readString("Enter Email IDr:");
+                    String email = readString("Enter Email ID:");
 
                     doctorService.updateDoctor(pid, phnum, email);
                     updateDoctorCheck = true;
                     System.out.println("Doctors details have been updated.");
                 }
                 case 5 -> {
-                    String doc = readString("Enter Doctor ID : ");
+                    String doc = readString("Enter Doctor ID : ").toUpperCase();
                     doctorService.deleteDoctor(doc);
                     updateDoctorCheck = true;
                     System.out.println("Doctors details have been deleted.");
@@ -92,7 +97,9 @@ public class DoctorMenu extends MainMenu {
 
                 default -> System.out.println("Invalid option");
             }
-            readString("Press ENTER to continue");
+            } catch (Exception e) {
+                System.out.println("Application ran into an error during requested operation, Please contact system admin.");
+            }
         }
 
 
@@ -103,29 +110,12 @@ public class DoctorMenu extends MainMenu {
         if (update) {
             System.out.println(" Persisting Changes to CSV");
             doctorService.saveDoctors(Constants.DOCTORS_CSV);
+
+            appointmentService.saveAppointments(Constants.APPOINTMENTS_CSV);
         }
 
     }
 
 
-    private void displayDoctor(List<Doctor> doctors){
-
-        System.out.println("+---------+-------------------------------------+---------------+------------------------+--------------------+-------------------");
-        System.out.println("| ID      |  Name                               |  Phone        | Email                  | Specialization     | Consultation Fee  ");
-        System.out.println("+---------+-------------------------------------+---------------+------------------------+--------------------+-------------------");
-
-        for (Doctor d : doctors) {
-            System.out.printf("| %-5s | %-35s |  %-12s | %-22s | %-18s | %-15s \n",
-                    d.getId(),
-                    d.getName(),
-                    d.getPhone(),
-                    d.getEmail(),
-                    d.getSpecialization(),
-                    d.getConsultationFee());
-        }
-        System.out.println("+---------+-------------------------------------+---------------+------------------------+--------------------+-------------------");
-
-
-    }
 
 }

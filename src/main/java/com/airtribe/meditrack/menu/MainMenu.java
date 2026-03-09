@@ -14,7 +14,7 @@ public class MainMenu {
         DoctorMenu doctorMenu = new DoctorMenu();
         AppointmentMenu appointmentMenu = new AppointmentMenu();
         AIAppointmentBooking ai = new AIAppointmentBooking();
-
+        Analytics analyticsService = new Analytics();
 
         printMainMenu();
 
@@ -25,6 +25,7 @@ public class MainMenu {
             case 2 -> doctorMenu.show();
             case 3 -> appointmentMenu.show();
             case 4 -> ai.help();
+            case 5 -> analyticsService.view();
             case 0 -> System.out.println("Exiting...");
 
             default -> System.out.println("Invalid choice. Please try again.");
@@ -41,6 +42,7 @@ public class MainMenu {
         System.out.println("2. Doctor Management");
         System.out.println("3. Appointment Management");
         System.out.println("4. AI - Recommendations by Symptoms");
+        System.out.println("5. Analytics");
         System.out.println("0. Exit");
 
 
@@ -51,7 +53,7 @@ public class MainMenu {
         while (true) {
             try {
                 System.out.print(prompt);
-                return Integer.parseInt(scanner.nextLine());
+                return Integer.parseInt(scanner.nextLine().trim());
             } catch (NumberFormatException e) {
                 System.out.println("Please enter a valid number.");
             }
@@ -62,7 +64,7 @@ public class MainMenu {
         while (true) {
             try {
                 System.out.print(prompt);
-                return Double.parseDouble(scanner.nextLine());
+                return Double.parseDouble(scanner.nextLine().trim());
             } catch (NumberFormatException e) {
                 System.out.println("Please enter a valid number.");
             }
@@ -71,7 +73,7 @@ public class MainMenu {
 
     protected String readString(String prompt) {
         System.out.print(prompt);
-        return scanner.nextLine();
+        return scanner.nextLine().trim();
     }
 
 }

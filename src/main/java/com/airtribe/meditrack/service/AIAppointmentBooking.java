@@ -10,10 +10,18 @@ import com.airtribe.meditrack.entity.Patient;
 import com.airtribe.meditrack.entity.id.EntityID;
 import com.airtribe.meditrack.menu.MainMenu;
 import com.airtribe.meditrack.util.AIHelper;
+import com.airtribe.meditrack.util.DisplayUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
+
+
+// ID fix overwriting csv - done
+//billing
+// filter doctors by specialization, compute average fee, analytics (appointments per doctor) using streams.
+//testing
 
 public class AIAppointmentBooking extends MainMenu {
 
@@ -44,22 +52,41 @@ public class AIAppointmentBooking extends MainMenu {
                     System.out.println("The consultants in our hospital with expertise in  " + specialization + " : ");
 
                     List<Doctor> doctors = doctorService.search(specialization);
-                    for (Doctor d : doctors) {
-                        System.out.println(d);
-                    }
+                    DisplayUtil.displayDoctor(doctors);
 
                     String confirm = readString("Would you like to book appointment ? (Y/N): ");
 
                     switch (confirm.toUpperCase()) {
                         case Constants.CONFIRM_YES -> {
-                            String d = readString("Enter the doctor ID to book appointment with : ");
-                            Doctor doctor = doctorService.search(new EntityID(d));
+                            String d = readString("Enter the doctor ID to book appointment with : ").toUpperCase();
+                            Doctor doctor = doctorService.search(new EntityID(d.toUpperCase()));
+                            if(doctor==null)
+                                System.out.println("Invalid ID");
                             LocalDate dt = LocalDate.parse(readString("Appointment Time (yyyy-MM-dd): "));
 
-                            System.out.println("Available Slots : ");
-                            System.out.println(suggestAvailableSlots(doctor, dt));
 
-                            LocalDateTime time = LocalDateTime.parse(readString("Appointment Time (yyyy-MM-dd HH:mm): "));
+                            List<LocalDateTime> slots = appointmentService.suggestAvailableSlots(doctor, dt);
+
+                            if(slots ==null || slots.isEmpty()){
+                                System.out.println("the selected Doctor is not available");
+                            }else {
+
+                                int index=0;
+                                System.out.println("Available Slots");
+
+                                while(index<slots.size()-1){
+                                    for(int j=0;j<4;j++){
+                                        System.out.print(slots.get(index++));
+                                        System.out.print("     ");
+                                    }
+                                    System.out.println( );
+                                }
+
+
+                                System.out.println( );
+                            }
+
+                            LocalDateTime time = LocalDateTime.parse(readString("Appointment Time (yyyy-MM-ddTHH:mm): "));
 
 
                             Patient patient = null;
@@ -67,7 +94,8 @@ public class AIAppointmentBooking extends MainMenu {
                             if (Constants.CONFIRM_YES.equalsIgnoreCase(existing)) {
                                 String name = readString("Name :");
                                 List<Patient> patients = patientService.search(name);
-                                String pid = readString("Confirm details : ");
+                                DisplayUtil.displayPatient(patients);
+                                String pid = readString("Enter Patient ID to confirm : ").toUpperCase();
                                 patient = patientService.search(new EntityID(pid));
                                 System.out.println(patient);
                             }
@@ -117,19 +145,5 @@ public class AIAppointmentBooking extends MainMenu {
 
     }
 
-    public List<LocalDateTime> suggestAvailableSlots(
-            Doctor doctor,
-            LocalDate date) {
-
-        System.out.println("doc - >" + doctor);
-        List<LocalDateTime> slots = AIHelper.suggestSlots(date);
-
-        for (Appointment a : appointmentService.getAllAppointmentsByDocId(doctor.getId().getValue())) {
-
-            slots.remove(a.getAppointmentTime());
-        }
-
-        return slots;
-    }
 
 }
