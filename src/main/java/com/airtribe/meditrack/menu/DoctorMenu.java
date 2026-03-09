@@ -9,6 +9,10 @@ import com.airtribe.meditrack.service.DoctorService;
 import com.airtribe.meditrack.util.DisplayUtil;
 
 import java.util.List;
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public class DoctorMenu extends MainMenu {
     private final static DoctorService doctorService = DoctorService.getInstance();

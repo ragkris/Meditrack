@@ -1,5 +1,9 @@
 package com.airtribe.meditrack.constants;
 
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public enum Specialization {
 
@@ -11,7 +15,7 @@ public enum Specialization {
     GENERAL_MEDICINE("GENERAL_MEDICINE");
 
 
-    private String value;
+    private final String value;
 
     Specialization(String value) {
         this.value = value;

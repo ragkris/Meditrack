@@ -1,4 +1,8 @@
 package com.airtribe.meditrack.constants;
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public enum AppointmentStatus {
 
@@ -6,7 +10,7 @@ public enum AppointmentStatus {
     CONFIRMED("confirmed"),
     CANCELLED("cancelled");
 
-    private String value;
+    private final String value;
 
     AppointmentStatus(String value) {
         this.value = value;

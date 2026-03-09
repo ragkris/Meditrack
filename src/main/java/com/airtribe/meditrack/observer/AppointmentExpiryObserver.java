@@ -6,6 +6,10 @@ import com.airtribe.meditrack.entity.Appointment;
 
 import java.util.Timer;
 import java.util.TimerTask;
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public class AppointmentExpiryObserver implements AppointmentObserver {
 
@@ -32,6 +36,6 @@ public class AppointmentExpiryObserver implements AppointmentObserver {
 
             }
 
-        }, 5 * 60 * 1000); // 30 minutes
+        }, 60 * 1000); // 30 minutes
     }
 }

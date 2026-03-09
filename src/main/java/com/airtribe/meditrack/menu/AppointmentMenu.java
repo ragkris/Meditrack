@@ -19,6 +19,10 @@ import com.airtribe.meditrack.util.IdGenerator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public class AppointmentMenu extends MainMenu {
     private final static PatientService patientService = PatientService.getInstance();

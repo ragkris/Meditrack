@@ -17,11 +17,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
-// ID fix overwriting csv - done
-//billing
-// filter doctors by specialization, compute average fee, analytics (appointments per doctor) using streams.
-//testing
 
 public class AIAppointmentBooking extends MainMenu {
 

@@ -10,6 +10,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public class Analytics extends MainMenu {
 

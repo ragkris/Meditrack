@@ -5,11 +5,15 @@ import com.airtribe.meditrack.entity.BillSummary;
 import com.airtribe.meditrack.entity.MedicalEntity;
 import com.airtribe.meditrack.entity.id.EntityID;
 import com.airtribe.meditrack.interfaces.Payable;
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public class LabBill extends MedicalEntity implements Payable {
 
-    private double testFee;
-    private BillingStrategy billingStrategy;
+    private final double testFee;
+    private final BillingStrategy billingStrategy;
 
     public LabBill(EntityID billId,
                    double testFee,

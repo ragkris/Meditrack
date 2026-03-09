@@ -3,6 +3,10 @@ package com.airtribe.meditrack.menu;
 import com.airtribe.meditrack.service.AIAppointmentBooking;
 
 import java.util.Scanner;
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public class MainMenu {
     private static final Scanner scanner = new Scanner(System.in);

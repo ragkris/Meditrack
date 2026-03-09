@@ -7,6 +7,10 @@ import com.airtribe.meditrack.entity.id.EntityID;
 
 import java.util.Collection;
 
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public class IdGenerator {
 

@@ -1,144 +1,241 @@
 package com.airtribe.meditrack.test;
 
 import com.airtribe.meditrack.billing.DoctorBillingStrategy;
-import com.airtribe.meditrack.billing.LabBillingStrategy;
-import com.airtribe.meditrack.constants.AppointmentStatus;
-import com.airtribe.meditrack.constants.Specialization;
-import com.airtribe.meditrack.entity.Appointment;
-import com.airtribe.meditrack.entity.BillSummary;
-import com.airtribe.meditrack.entity.Doctor;
-import com.airtribe.meditrack.entity.Patient;
+import com.airtribe.meditrack.entity.*;
 import com.airtribe.meditrack.entity.bill.DoctorBill;
-import com.airtribe.meditrack.entity.bill.LabBill;
 import com.airtribe.meditrack.entity.id.EntityID;
 import com.airtribe.meditrack.interfaces.Payable;
-import com.airtribe.meditrack.service.AppointmentService;
-import com.airtribe.meditrack.service.DoctorService;
-import com.airtribe.meditrack.service.PatientService;
-import com.airtribe.meditrack.util.AIHelper;
-import com.airtribe.meditrack.util.IdGenerator;
+import com.airtribe.meditrack.constants.*;
+import com.airtribe.meditrack.menu.Analytics;
+import com.airtribe.meditrack.service.*;
+import com.airtribe.meditrack.util.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
+
 
 public class TestRunner {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
-        DoctorService doctorService = DoctorService.getInstance();
-        PatientService patientService = PatientService.getInstance();
-        AppointmentService appointmentService = AppointmentService.getInstance();
+        System.out.println("===== MEDITRACK TEST RUNNER =====");
 
-        Doctor doctor = new Doctor(
-                IdGenerator.generateDoctorId(),
-                "Dr.Ravi",
-                "9876543210",
-                "ravi@mail.com",
-                Specialization.CARDIOLOGY,
-                500
-        );
+        PatientService patientService =  PatientService.getInstance();
+        DoctorService doctorService =  DoctorService.getInstance();
+        AppointmentService appointmentService =  AppointmentService.getInstance();
+        Analytics analytics = new Analytics();
 
-        doctorService.addDoctor(doctor);
+        testPatientCRUD(patientService);
+        testDoctorCRUD(doctorService);
+        testSearch(patientService, doctorService);
+        testAppointments(patientService, doctorService, appointmentService);
+        testBilling();
+        testStreamsAnalytics(analytics);
+        testClone();
+        testCSV(patientService);
 
-        Patient patient = new Patient(
-                IdGenerator.generatePatientId(),
-                "Anitha",
-                "9871234567",
-                "anita@mail.com",
-                30,
-                "Female"
-        );
+        System.out.println("===== ALL TESTS COMPLETED =====");
+    }
 
-        patientService.addPatient(patient);
+    // ----------------------------------------------------
 
-        Appointment appointment = new Appointment(
-                IdGenerator.generateAppointmentId(),
-                patient, doctor,
-                LocalDateTime.now(), AppointmentStatus.PENDING
-        );
+    private static void testPatientCRUD(PatientService patientService) {
 
-        appointmentService.bookAppointment(appointment);
-
-        System.out.println("Doctor:");
-        System.out.println(doctor);
-
-        System.out.println("\nPatient:");
-        System.out.println(patient);
-
-        System.out.println("\nAppointment:");
-        System.out.println(appointment);
-
-
-        //Deep Copy
+        System.out.println("\n--- PATIENT CRUD TEST ---");
 
         Patient p1 = new Patient(
-                new EntityID("PAT001"),
-                "Anita",
-                "9876543210",
-                "anita@mail.com",
-                30,
-                "Female"
+                new EntityID("PAT-900"),
+                "Test Patient",
+                "9999999999",
+                "test@mail.com",
+                35,
+                "M"
         );
+
+        patientService.addPatient(p1);
+
+        System.out.println("Patient added.");
+
+        Patient found = patientService.search(p1.getId());
+
+        System.out.println("Retrieved: " + found.getName());
+
+        patientService.deletePatient(p1.getId().toString());
+
+        System.out.println("Patient deleted.");
+    }
+
+    // ----------------------------------------------------
+
+    private static void testDoctorCRUD(DoctorService doctorService) {
+
+        System.out.println("\n--- DOCTOR CRUD TEST ---");
 
         Doctor d1 = new Doctor(
-                new EntityID("DOC101"),
-                "Dr Karthik",
-                "9876543210",
-                "kumar@clinic.com",
+                new EntityID("DOC-900"),
+                "Test Doctor",
+                "8888888888",
+                "doctor@mail.com",
                 Specialization.CARDIOLOGY,
-                500
+                800
         );
 
-        Appointment appt1 = new Appointment(
-                IdGenerator.generateAppointmentId(),
-                p1,
-                d1,
-                LocalDateTime.now(), AppointmentStatus.CONFIRMED
-        );
+        doctorService.addDoctor(d1);
 
-        Appointment appt2 = appt1.clone();
-        appt2.getPatient().setAge(78);
+        System.out.println("Doctor added.");
 
+        List<Doctor> doctors = doctorService.getAllDoctors();
 
-        //Shallow Copy
-        Patient p2 = p1.clone();
-        p2.setAge(55);
+        System.out.println("Doctor count: " + doctors.size());
 
+        doctorService.deleteDoctor(d1.getId().toString());
 
-        //immutable
-
-
-        //Dynamic Dispatch
-        Payable dr = new DoctorBill(new EntityID("B101"), 500, new DoctorBillingStrategy());
-
-        BillSummary summary = dr.generateBill();
-
-        System.out.println(summary.toString());
-
-
-        Payable lab = new LabBill(new EntityID("B101"), 200, new LabBillingStrategy());
-
-        BillSummary summary1 = dr.generateBill();
-
-        System.out.println(summary);
-
-
-        //AI Helper
-
-        String symptom = "chest pain";
-
-        Specialization specialization =
-                AIHelper.recommendSpecialization(symptom);
-
-        System.out.println("Recommended doctor type: " + specialization);
-
-        List<LocalDateTime> slots =
-                AIHelper.suggestSlots(LocalDate.now());
-
-        for (LocalDateTime slot : slots) {
-            System.out.println(slot);
-        }
-
+        System.out.println("Doctor deleted.");
     }
+
+    // ----------------------------------------------------
+
+    private static void testSearch(
+            PatientService patientService,
+            DoctorService doctorService) {
+
+        System.out.println("\n--- SEARCH TEST ---");
+
+        List<Patient> patients = patientService.search("Anita");
+
+        System.out.println("Patients found: " + patients.size());
+
+        List<Doctor> doctors =
+                doctorService.search(Specialization.CARDIOLOGY);
+
+        System.out.println("Cardiologists found: " + doctors.size());
+    }
+
+    // ----------------------------------------------------
+
+    private static void testAppointments(
+            PatientService patientService,
+            DoctorService doctorService,
+            AppointmentService appointmentService) {
+
+        System.out.println("\n--- APPOINTMENT TEST ---");
+        Patient p1 = new Patient(
+                new EntityID("PAT-900"),
+                "Test Patient",
+                "9999999999",
+                "test@mail.com",
+                35,
+                "M"
+        );
+
+        patientService.addPatient(p1);
+        Doctor d1 = new Doctor(
+                new EntityID("DOC-900"),
+                "Test Doctor",
+                "8888888888",
+                "doctor@mail.com",
+                Specialization.CARDIOLOGY,
+                800
+        );
+
+        doctorService.addDoctor(d1);
+
+        System.out.println("Doctor added.");
+        System.out.println("Patient added.");
+        Patient p = patientService.getAllPatients().get(0);
+        Doctor d = doctorService.getAllDoctors().get(0);
+
+        Appointment appt = new Appointment(
+                new EntityID("APT-900"),
+                p,
+                d,
+                LocalDateTime.now().plusDays(1), AppointmentStatus.CONFIRMED
+        );
+
+        appointmentService.createAppointment(appt);
+
+        System.out.println("Appointment created.");
+
+        List<Appointment> list = appointmentService.getAllAppointments();
+
+        System.out.println("Appointments count: " + list.size());
+
+        appointmentService.cancelAppointment(appt.getAppointmentId().toString());
+
+        System.out.println("Appointment cancelled.");
+    }
+
+    // ----------------------------------------------------
+
+    private static void testBilling() {
+
+        System.out.println("\n--- BILLING TEST ---");
+
+        Payable bill = new DoctorBill(
+                new EntityID("INV-101"),
+                500, new DoctorBillingStrategy()
+        );
+
+        BillSummary summary = bill.generateBill();
+
+        System.out.println("Bill total: " + summary.toString());
+    }
+
+    // ----------------------------------------------------
+
+    private static void testStreamsAnalytics(
+            Analytics analytics) {
+
+        System.out.println("\n--- STREAM ANALYTICS TEST ---");
+
+        double avgFee =   analytics.getAverageConsultationFee();
+
+        System.out.println("Average doctor fee: " + avgFee);
+
+        Map<Doctor, Long> analytics1 =analytics.getAppointmentsPerDoctor();
+
+        analytics1.forEach((doc, count) ->
+                System.out.println(doc + " -> " + count));
+    }
+
+    // ----------------------------------------------------
+
+    private static void testClone() throws CloneNotSupportedException {
+
+        System.out.println("\n--- CLONE TEST ---");
+
+        Patient p = new Patient(
+                new EntityID("PAT-CLONE"),
+                "Clone Test",
+                "1111111111",
+                "clone@mail.com",
+                25,
+                "F"
+        );
+
+        Patient cloned = (Patient) p.clone();
+
+        System.out.println("Original: " + p.getName());
+        System.out.println("Cloned: " + cloned.getName());
+    }
+
+    // ----------------------------------------------------
+
+    private static void testCSV(PatientService patientService) {
+
+        System.out.println("\n--- CSV TEST ---");
+
+        String file = "patients_test.csv";
+
+        patientService.savePatients(file);
+
+        System.out.println("Patients saved to CSV.");
+    }
+
 }

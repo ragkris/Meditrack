@@ -2,6 +2,10 @@ package com.airtribe.meditrack.entity;
 
 
 import com.airtribe.meditrack.entity.id.EntityID;
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public class Patient extends Person implements Cloneable {
 

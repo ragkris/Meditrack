@@ -7,12 +7,16 @@ import com.airtribe.meditrack.entity.MedicalEntity;
 import com.airtribe.meditrack.entity.id.EntityID;
 import com.airtribe.meditrack.interfaces.Payable;
 
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public class DoctorBill extends MedicalEntity implements Payable {
 
-    private double consultationFee;
+    private final double consultationFee;
 
-    private BillingStrategy billingStrategy;
+    private final BillingStrategy billingStrategy;
 
     public DoctorBill(EntityID billId,
                       double consultationFee,

@@ -3,6 +3,10 @@ package com.airtribe.meditrack.entity;
 import com.airtribe.meditrack.entity.id.EntityID;
 
 import java.time.LocalDateTime;
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public abstract class MedicalEntity {
 

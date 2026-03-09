@@ -1,6 +1,10 @@
 package com.airtribe.meditrack.util;
 
 import com.airtribe.meditrack.exception.InvalidDataException;
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public class Validator {
     private static final String EMAIL_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";

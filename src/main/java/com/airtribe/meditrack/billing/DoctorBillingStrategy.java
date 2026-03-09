@@ -2,10 +2,14 @@ package com.airtribe.meditrack.billing;
 
 
 import com.airtribe.meditrack.constants.Constants;
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public class DoctorBillingStrategy implements BillingStrategy {
 
-    private double taxRate;
+    private final double taxRate;
 
     public DoctorBillingStrategy() {
         this.taxRate = Constants.TAX_RATE;

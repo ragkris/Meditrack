@@ -23,6 +23,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public class AppointmentService {
 

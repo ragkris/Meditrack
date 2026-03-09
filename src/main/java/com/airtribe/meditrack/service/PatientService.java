@@ -13,6 +13,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
+
+
 public class PatientService implements Searchable<Patient> {
 
     private static PatientService instance;

@@ -2,6 +2,10 @@ package com.airtribe.meditrack.entity;
 
 
 import com.airtribe.meditrack.billing.BillingStrategy;
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public class Bill {
 

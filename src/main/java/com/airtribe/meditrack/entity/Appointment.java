@@ -11,6 +11,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public class Appointment implements AppointmentSubject, Cloneable {
 
@@ -23,7 +27,7 @@ public class Appointment implements AppointmentSubject, Cloneable {
     private LocalDateTime appointmentTime;
     private AppointmentStatus status;
 
-    private List<AppointmentObserver> observers = new ArrayList<>();
+    private final List<AppointmentObserver> observers = new ArrayList<>();
 
 
     public Appointment(EntityID appointmentId,

@@ -3,10 +3,14 @@ package com.airtribe.meditrack.entity;
 
 import com.airtribe.meditrack.constants.Specialization;
 import com.airtribe.meditrack.entity.id.EntityID;
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public class Doctor extends Person implements Cloneable {
 
-    private Specialization specialization;
+    private final Specialization specialization;
     private double consultationFee;
 
     public Doctor(EntityID id, String name, String phone, String email,

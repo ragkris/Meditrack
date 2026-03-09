@@ -1,5 +1,9 @@
 package com.airtribe.meditrack.observer;
 
+/**
+ * @author Kavitha Krishnan
+ * @since 2026
+ */
 
 public interface AppointmentSubject {
 
